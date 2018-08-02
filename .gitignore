@@ -4,3 +4,4 @@ pkg/*
 txtlocal.komodoproject
 README.html
 api_login.rb
+.ruby-version

@@ -4,12 +4,9 @@ require 'json'
 
 module Txtlocal
   class Message
+    API_ENDPOINT = URI.parse("https://www.txtlocal.com/sendsmspost.php").freeze
 
-    attr_accessor :body
-    attr_accessor :recipients
-    attr_accessor :from
-
-    attr_accessor :response
+    attr_accessor :body, :recipients, :from, :response
 
     def initialize(message=nil, recipients=nil, options=nil)
       self.body = message if message
@@ -24,12 +21,14 @@ module Txtlocal
     def recipients
       @recipients ||= []
     end
+
     def recipients=(recipients)
       @recipients = []
       [*recipients].each do |recip|
         add_recipient(recip)
       end
     end
+
     def add_recipient(recipient)
       recipient = recipient.gsub(/\s/, '')
       recipient = case recipient
@@ -47,6 +46,7 @@ module Txtlocal
       self.from = Txtlocal.config.from if not @from
       @from
     end
+
     def from=(from)
       if from.to_s.length < 3
         @from = nil
@@ -69,22 +69,37 @@ module Txtlocal
         end
       end
     end
-
-    API_ENDPOINT = URI.parse("https://www.txtlocal.com/sendsmspost.php")
+    
     def send!
       http = Net::HTTP.new(API_ENDPOINT.host, API_ENDPOINT.port)
       http.use_ssl = true
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
       req = Net::HTTP::Post.new(API_ENDPOINT.path)
-      req.set_form_data(:json => 1,
-                        :test => Txtlocal.config.testing? ? 1 : 0,
-                        :from => from,
-                        :message => body,
-                        :selectednums => recipients.join(","),
-                        :uname => Txtlocal.config.username,
-                        :pword => Txtlocal.config.password)
+      
+
+      req.set_form_data(build_form_data)
       result = http.start { |http| http.request(req) }
       self.response = result
+    end
+
+    private
+
+    def build_form_data
+      form_data = {
+        json: 1,
+        test: Txtlocal.config.testing? ? 1 : 0,
+        from: from,
+        message: body,
+        selectednums: recipients.join(","),
+      }
+
+      if Txtlocal.config.api_key
+        form_data[:apikey] = Txtlocal.config.api_key
+      else
+        form_data[:uname] = Txtlocal.config.username
+        form_data[:pword] = Txtlocal.config.password
+      end
+      form_data
     end
   end
 end

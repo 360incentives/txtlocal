@@ -4,20 +4,22 @@ describe Txtlocal do
 
   describe "config" do
     it "should be accessible" do
-      Txtlocal.config.should be_a Txtlocal::Config
+      expect(Txtlocal.config.class).to eq(Txtlocal::Config)
     end
+
     it "should be modifiable with a block" do
       remember = nil
       Txtlocal.config do |c|
-        c.should be_a Txtlocal::Config
+        expect(c.class).to eq(Txtlocal::Config)
         remember = c
       end
-      Txtlocal.config.should == remember
+      expect(Txtlocal.config).to eq(remember)
     end
+
     it "should be resettable" do
       c = Txtlocal.config
       Txtlocal.reset_config
-      Txtlocal.config.should_not == c
+      expect(Txtlocal.config).not_to eq(c)
     end
   end
 
@@ -28,9 +30,9 @@ describe Txtlocal do
     let(:msg_instance) { double("message instance") }
 
     it "should construct a Message instance and send! it" do
-      msg_instance.should_receive(:send!).with(no_args)
-      Txtlocal::Message.should_receive(:new).with(message, recipients, options) { msg_instance }
-      Txtlocal.send_message(message, recipients, options).should == msg_instance
+      expect(msg_instance).to receive(:send!).with(no_args)
+      expect(Txtlocal::Message).to receive(:new).with(message, recipients, options).and_return(msg_instance)
+      expect(Txtlocal.send_message(message, recipients, options)).to eq(msg_instance)
     end
   end
 

@@ -14,6 +14,9 @@ module Txtlocal
     # Access the API in test mode
     attr_accessor :test
 
+    # The API key of the txtlocal account to use when accessing the API instead of username and password
+    attr_accessor :api_key
+
     def initialize
       @test = false
     end
