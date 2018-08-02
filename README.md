@@ -5,8 +5,9 @@ This gem is intended to provide a simple API for sending text messages via txtlo
 ## Installing
 
 Add the gem to your gemfile
-
-  gem 'txtlocal', git: 'git://github.com/davidtengeri/txtlocal.git'
+```ruby
+gem 'txtlocal', git: 'git://github.com/davidtengeri/txtlocal.git'
+```
 
 ## Usage
 
