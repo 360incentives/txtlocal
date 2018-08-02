@@ -129,7 +129,7 @@ describe Txtlocal::Message do
       context "username and password authentication" do
         before(:each) do
           WebMock.disable_net_connect!
-          stub_request(:post, "https://www.txtlocal.com/sendsmspost.php")
+          stub_request(:post, "https://api.txtlocal.com/send/")
           Txtlocal.config do |c|
             c.from = "testing"
             c.username = "testuser"
@@ -143,17 +143,18 @@ describe Txtlocal::Message do
         it "should send data to the API endpoint" do
           msg = Txtlocal::Message.new("a message", "447729416583")
           msg.send!
-          expect(WebMock).to have_requested(:post, "https://www.txtlocal.com/sendsmspost.php").with(
-            body: {'uname' => "testuser", 'pword' => "testpass", 'json' => '1', 'test' => '0',
-                   'from' => "testing", 'selectednums' => "447729416583", 'message' => "a message"}
+          expect(WebMock).to have_requested(:post, "https://api.txtlocal.com/send/").with(
+            body: {'username' => "testuser", 'password' => "testpass", 'json' => '1', 'test' => '0',
+                   'sender' => "testing", 'numbers' => "447729416583", 'message' => "a message"}
           )
         end
+
         it "should comma sepratate multiple recipients" do
           msg = Txtlocal::Message.new("a message", ["447729416583", "447984534657"])
           msg.send!
-          expect(WebMock).to have_requested(:post, "https://www.txtlocal.com/sendsmspost.php").with(
-            body: {'uname' => "testuser", 'pword' => "testpass", 'json' => '1', 'test' => '0',
-                   'from' => "testing", 'selectednums' => "447729416583,447984534657",
+          expect(WebMock).to have_requested(:post, "https://api.txtlocal.com/send/").with(
+            body: {'username' => "testuser", 'password' => "testpass", 'json' => '1', 'test' => '0',
+                   'sender' => "testing", 'numbers' => "447729416583,447984534657",
                    'message' => "a message"}
           )
         end
@@ -161,7 +162,7 @@ describe Txtlocal::Message do
       context "api key authentication" do
         before(:each) do
           WebMock.disable_net_connect!
-          stub_request(:post, "https://www.txtlocal.com/sendsmspost.php")
+          stub_request(:post, "https://api.txtlocal.com/send/")
           Txtlocal.config do |c|
             c.from = "testing"
             c.api_key = "testapikey"
@@ -174,9 +175,9 @@ describe Txtlocal::Message do
         it "should send data to the API endpoint" do
           msg = Txtlocal::Message.new("a message", "447729416583")
           msg.send!
-          expect(WebMock).to have_requested(:post, "https://www.txtlocal.com/sendsmspost.php").with(
+          expect(WebMock).to have_requested(:post, "https://api.txtlocal.com/send/").with(
             body: {'apikey' => "testapikey", 'json' => '1', 'test' => '0',
-                   'from' => "testing", 'selectednums' => "447729416583", 'message' => "a message"}
+                   'sender' => "testing", 'numbers' => "447729416583", 'message' => "a message"}
           )
         end
       end

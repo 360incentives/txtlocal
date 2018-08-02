@@ -4,7 +4,7 @@ require 'json'
 
 module Txtlocal
   class Message
-    API_ENDPOINT = URI.parse("https://www.txtlocal.com/sendsmspost.php").freeze
+    API_ENDPOINT = URI.parse("https://api.txtlocal.com/send/").freeze
 
     attr_accessor :body, :recipients, :from, :response
 
@@ -88,16 +88,16 @@ module Txtlocal
       form_data = {
         json: 1,
         test: Txtlocal.config.testing? ? 1 : 0,
-        from: from,
+        sender: from,
         message: body,
-        selectednums: recipients.join(","),
+        numbers: recipients.join(","),
       }
 
       if Txtlocal.config.api_key
         form_data[:apikey] = Txtlocal.config.api_key
       else
-        form_data[:uname] = Txtlocal.config.username
-        form_data[:pword] = Txtlocal.config.password
+        form_data[:username] = Txtlocal.config.username
+        form_data[:password] = Txtlocal.config.password
       end
       form_data
     end
