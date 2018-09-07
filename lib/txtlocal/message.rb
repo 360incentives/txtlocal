@@ -36,6 +36,10 @@ module Txtlocal
           recipient
         when /^(?:\+447|07)(\d{9})$/
           "447#{$1}"
+        when /^\+?353\d{9}$/
+          recipient
+        when /^08(\d{8})$/
+          "3538#{$1}"
         else
           return
       end

@@ -71,6 +71,18 @@ describe Txtlocal::Message do
         msg.add_recipient("07729 457 756")
         expect(msg.recipients).to match(["447729457756"])
       end
+      it "should accept Ireland numbers" do
+        msg.add_recipient("353812345678")
+        expect(msg.recipients).to match(["353812345678"])
+      end
+      it "should accept international Ireland numbers" do
+        msg.add_recipient("+353812345678")
+        expect(msg.recipients).to match(["+353812345678"])
+      end
+      it "should accept 08 format Ireland numbers" do
+        msg.add_recipient("0812345678")
+        expect(msg.recipients).to match(["353812345678"])
+      end
       it "should not add invalid numbers" do
         # TODO: exception here?
         msg.add_recipient("qwdcs")

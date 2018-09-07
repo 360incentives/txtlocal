@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    txtlocal (1.0)
+    txtlocal (1.1)
       json
 
 GEM
